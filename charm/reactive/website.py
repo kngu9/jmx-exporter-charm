@@ -5,4 +5,4 @@ from charms.reactive import when
 
 @when('website.available')
 def setup_website(website):
-    website.configure(EXPORTER_PATH)
+    website.configure(EXPORTER_PORT)

@@ -1,14 +1,8 @@
 includes:
   - layer:basic
   - interface:juju-info
+  - interface:http
 options:
   basic:
     packages:
-      - git
       - default-jre-headless
-defines:
-  rules:
-    type: array
-    default: []
-    description: |-
-      The jxm-exporter rules that will be applied.

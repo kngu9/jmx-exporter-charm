@@ -5,7 +5,7 @@ from charmhelpers.core import hookenv
 from charms.layer.jmxexporter import JMXExporter
 
 
-@when('jmxexporter.configured')
+@when('jmxexporter.available')
 def autostart():
     jmx = JMXExporter()
 

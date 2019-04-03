@@ -4,9 +4,10 @@ from subprocess import check_call
 
 from charmhelpers.core import hookenv
 
-from charms.reactive import hook, set_flag
+from charms.reactive import hook
 
 from charms.layer.jmxexporter import JMXExporter, EXPORTER_SERVICE_PATH
+
 
 @hook('stop')
 def stop():
@@ -24,4 +25,7 @@ def stop():
             'jmx_prometheus_httpserver'
         ])
     except Exception as e:
-        hookenv.log('failed to remove jmx_exporter: {}'.format(e), hookenv.ERROR)
+        hookenv.log(
+            'failed to remove jmx_exporter: {}'.format(e),
+            hookenv.ERROR
+        )

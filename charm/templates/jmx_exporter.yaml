@@ -1,7 +1,0 @@
-{%- if rule is defined -%}
-rules:
-{%- for rule in rules -%}
-- pattern: {{ rule.pattern }}
-  name: {{ rule.name }}
-{% endfor %}
-{% endif %}

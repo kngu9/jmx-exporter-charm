@@ -1,8 +1,6 @@
-import os
 import shutil
-import filecmp
 
-from subprocess import check_call, check_output
+from subprocess import check_call
 
 from charmhelpers.core import hookenv, templating, host
 
@@ -16,9 +14,8 @@ EXPORTER_APT_NAME = 'jmx_prometheus_httpserver'
 EXPORTER_SERVICE_PATH = '/etc/systemd/system/{}'.format(
     EXPORTER_SERVICE
 )
-EXPORTER_CONFIG_PATH = '/etc/jmx_exporter/{}.yaml'.format(
-    EXPORTER_UNIT
-)
+EXPORTER_CONFIG_PATH = hookenv.config()['config']
+
 
 class JMXExporter():
     def install(self, service=False):
@@ -35,15 +32,20 @@ class JMXExporter():
 
         if service:
             # Install as a service
+            if hookenv.config()['public']:
+                addr = '0.0.0.0'
+            else:
+                addr = hookenv.unit_private_ip()
+
             ex = ' '.join([
                 shutil.which(EXPORTER_UNIT),
                 '{addr}:{port}'.format(
-                    addr=hookenv.unit_private_ip(),
+                    addr=addr,
                     port=EXPORTER_PORT
                 ),
                 EXPORTER_CONFIG_PATH
             ])
-            
+
             templating.render(
                 source='{}'.format(EXPORTER_SERVICE),
                 target=EXPORTER_SERVICE_PATH,
@@ -54,18 +56,7 @@ class JMXExporter():
                 }
             )
 
-            check_call(['systemctl', 'enable', EXPORTER_SERVICE])
-
-            check_call(['journalctl', '--unit={}'.format(EXPORTER_SERVICE)])
-
-    def configure(self):
-        templating.render(
-            source='jmx_exporter.yaml',
-            target=EXPORTER_CONFIG_PATH,
-            owner='root',
-            perms=0o644,
-            context={}
-        )
+            self.enable()
 
     def open_ports(self):
         '''
@@ -80,14 +71,10 @@ class JMXExporter():
         hookenv.close_port(EXPORTER_PORT)
 
     def enable(self):
-        if not self.is_enabled():
-            check_call(['systemctl', 'enable', EXPORTER_SERVICE])
-            check_call(['journalctl', '--unit={}'.format(EXPORTER_SERVICE)])
+        check_call(['systemctl', 'enable', EXPORTER_SERVICE])
 
     def disable(self):
-        check_call([
-            'systemctl', 'disable', EXPORTER_SERVICE
-        ])
+        check_call(['systemctl', 'disable', EXPORTER_SERVICE])
 
     def restart(self):
         '''
@@ -106,14 +93,6 @@ class JMXExporter():
         Stops the jmx-exporter service.
         '''
         host.service_stop(EXPORTER_SERVICE)
-    
-    def is_enabled(self):
-        '''
-        Returns true if service is enabled
-        '''
-        return check_output([
-            'systemctl', 'is-enabled', EXPORTER_SERVICE
-        ]).decode('utf-8') == 'enabled'
 
     def is_running(self):
         '''
