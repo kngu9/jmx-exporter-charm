@@ -1,0 +1,18 @@
+name: jmx-exporter
+summary: Exports JMX attributes to prometheus using jmx-exporter
+maintainer: Khanh Nguyen <khanh.nguyen@canonical.com>
+description: |
+  JMX exporter charm
+tags:
+  - observability
+subordinate: true
+provides:
+  website:
+    interface: http
+requires:
+  host-system:
+    interface: juju-info
+    scope: container
+min-juju-version: '2.4.0'
+series:
+- bionic
