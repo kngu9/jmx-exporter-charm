@@ -6,3 +6,4 @@ options:
   basic:
     packages:
       - default-jre-headless
+repo: https://github.com/cloud-green/jmx-exporter-charm.git

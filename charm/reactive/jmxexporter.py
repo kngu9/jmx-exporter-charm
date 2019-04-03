@@ -10,6 +10,12 @@ from charmhelpers.core import hookenv
 from charms.layer.jmxexporter import JMXExporter
 
 
+@when_not('jmxexporter.installed')
+def install():
+    JMXExporter().install()
+    set_flag('jmxexporter.installed')
+
+
 def refresh():
     # Prevent charm from firing initially
     if not path.isfile(hookenv.config()['config']):
@@ -25,13 +31,6 @@ def refresh():
     set_flag('jmxexporter.available')
 
 
-@when_not('jmxexporter.installed')
-def install():
-    JMXExporter().install()
-    set_flag('jmxexporter.installed')
-
-
-@when_any('host-system.available', 'host-system.connected')
 @when_not('jmxexporter.available')
 def waiting():
     hookenv.status_set('waiting', 'waiting for config')
