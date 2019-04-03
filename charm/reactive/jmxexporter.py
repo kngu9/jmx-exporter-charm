@@ -11,6 +11,10 @@ from charms.layer.jmxexporter import JMXExporter
 
 
 def refresh():
+    # Prevent charm from firing initially
+    if not path.isfile(hookenv.config()['config']):
+        return
+
     hookenv.status_set('maintenance', 'refreshing service')
     clear_flag('jmxexporter.available')
 
@@ -46,6 +50,4 @@ def config_changed():
 @when_file_changed(hookenv.config()['config'])
 @when_any('host-system.available', 'host-system.connected')
 def config_added():
-    # Prevent charm from firing initially
-    if path.isfile(hookenv.config()['config']):
-        refresh()
+    refresh()
