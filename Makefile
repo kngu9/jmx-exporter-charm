@@ -1,32 +1,44 @@
-all: jar charm
+TARGETS = charm/files/exporter.deb \
+		  builds/jmx-exporter		  
 
+.PHONY: all
+all: $(TARGETS)
+
+.PHONY: lint
+check: lint
+
+.PHONY: lint
 lint:
 	flake8 --ignore=E121,E123,E126,E226,E24,E704,E265 ./reactive ./lib
 
-.PHONY: jar
+.PHONY: charm-jar
+charm-jar: charm/files/exporter.deb
+
+.PHONY: charm
 charm: builds/jmx-exporter
 
-builds/jmx-exporter: files/exporter.jar
+builds/jmx-exporter: charm/files/exporter.deb
 	charm build ./charm/ -o ./
 
-.PHONY: files/exporter.jar
-files/exporter.jar: jmx_exporter/collector/target
+charm/files/exporter.deb: jmx_exporter/jmx_prometheus_httpserver/target/*.deb
+	cp $? charm/files/exporter.deb
 
-jmx_exporter/collector/target:
+jmx_exporter/jmx_prometheus_httpserver/target/*.deb: jmx_exporter/pom.xml
 	mvn -f jmx_exporter package
-	cp jmx_exporter/collector/target/collector-0.11.1-SNAPSHOT.jar charm/files/exporter.jar
+
+jmx_exporter/pom.xml:
+	git submodule update --init --recursive
 
 .PHONY: clean
-clean: clean-charm clean-jar
+clean: clean-charm clean-deb
 
 .PHONY: clean-charm
 clean-charm:
 	$(RM) -r ./builds ./deps
 
-.PHONY: clean-jar
-clean-jar:
-	$(RM) -r jmx_exporter/collector/target
-	$(RM) charm/files/exporter.jar
+.PHONY: clean-deb
+clean-deb:
+	$(RM) -r charm/files/jmx_prometheus_httpserver*.deb
 
 .PHONY: deps
 deps: submodules
