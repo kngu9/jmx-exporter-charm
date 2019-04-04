@@ -2,18 +2,13 @@ options:
   config:
     type: string
     default: |-
-      # Begin config
       ---
-      hostPort: localhost:4081
-      username: 
-      password: 
       jmxUrl: service:jmx:rmi:///jndi/rmi://localhost:9999/jmxrmi
       lowercaseOutputName: false
       lowercaseOutputLabelNames: false
 
       rules:
       - pattern: ".*"
-      # End config
     description: |-
       The configuration that will be used by the JMX exporter
       visit https://github.com/prometheus/jmx_exporter/tree/master/example_configs.
