@@ -1,0 +1,15 @@
+includes:
+- layer:basic
+- layer:snap
+- interface:juju-info
+- interface:http
+
+options:
+  basic:
+    packages:
+      - default-jre-headless
+  snap:
+    jmx-exporter:
+      channel: edge
+
+repo: https://github.com/cloud-green/jmx-exporter-charm.git

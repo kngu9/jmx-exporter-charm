@@ -1,49 +1,39 @@
-from os import path
-
-from subprocess import check_call
-
-from charms.reactive import (when, when_any, when_not, set_flag,
+from charms.reactive import (when_any, when_not, set_flag,
                              clear_flag, hook, when_file_changed)
+from charms.reactive.helpers import data_changed
 
 from charmhelpers.core import hookenv
 
 from charms.layer.jmxexporter import JMXExporter
 
 
-@when_not('jmxexporter.installed')
-def install():
-    JMXExporter().install()
-    set_flag('jmxexporter.installed')
-
-
 def refresh():
-    # Prevent charm from firing initially
-    if not path.isfile(hookenv.config()['config']):
-        return
-
     hookenv.status_set('maintenance', 'refreshing service')
     clear_flag('jmxexporter.service-installed')
 
-    jmx = JMXExporter()
-    jmx.install(service=True)
-    jmx.open_ports()
-    check_call(['systemctl', 'daemon-reload'])
+    if not JMXExporter().jmx.install():
+        # Prevent charm from firing initially
+        hookenv.status_set(
+            'waiting',
+            'waiting for config at {}'.format(
+                 hookenv.config()['config']
+            )
+        )
+        return
 
     set_flag('jmxexporter.service-installed')
 
 
 @when_not('jmxexporter.service-installed')
 def waiting():
-    hookenv.status_set('waiting', 'waiting for config')
-
-
-@hook('upgrade-charm')
-def upgrade():
     refresh()
 
 
 @hook('config-changed')
 def config_changed():
+    if not data_changed('jmx_exporter.config', hookenv.config()['config']):
+        return
+
     refresh()
 
 

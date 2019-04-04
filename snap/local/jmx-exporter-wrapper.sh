@@ -7,7 +7,4 @@ if [ ! -f $SNAP_COMMON/config.yaml ]; then
 	exit 1
 fi
 
-export PATH=$SNAP/usr/lib/jvm/default-java/bin:$PATH
-unset JAVA_HOME
-
-$SNAP/opt/kafka/bin/kafka-server-start.sh $SNAP_COMMON/server.properties
+java -jar $SNAP/jmx_prometheus_httpserver/jmx_prometheus_httpserver-0.11.0-jar-with-dependencies.jar $SNAP_COMMON/config.yaml

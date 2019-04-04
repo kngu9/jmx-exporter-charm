@@ -3,6 +3,9 @@ summary: Exports JMX attributes to prometheus using jmx-exporter
 maintainer: Khanh Nguyen <khanh.nguyen@canonical.com>
 description: |
   JMX exporter charm
+min-juju-version: '2.4.0'
+series:
+  - bionic
 tags:
   - observability
 subordinate: true
@@ -13,6 +16,8 @@ requires:
   host-system:
     interface: juju-info
     scope: container
-min-juju-version: '2.4.0'
-series:
-- bionic
+resources:
+  jmx-exporter:
+    type: file
+    filename: jmx-exporter.snap
+    description: JMX-Exporter snap package

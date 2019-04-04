@@ -5,8 +5,3 @@ options:
     description: |-
       The path to the jmx_exporter configuration yaml. For examples
       visit https://github.com/prometheus/jmx_exporter/tree/master/example_configs.
-  public:
-    type: boolean
-    default: false
-    description: |-
-      Should the jmx exporter expose itself to the public network.

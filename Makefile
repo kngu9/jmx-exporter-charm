@@ -1,32 +1,33 @@
 JMX_EXPORTER_VERSION := $(shell awk '/version:/ {print $$2}' snap/snapcraft.yaml | head -1 | sed "s/'//g")
 
 TARGETS = jmx-exporter_$(JMX_EXPORTER_VERSION)_amd64.snap \
-		  builds/jmx-exporter		  
+		  charm/builds/jmx-exporter		  
 
 .PHONY: all
 all: $(TARGETS)
 
 .PHONY: charm
-charm: builds/jmx-exporter
+charm: charm/builds/jmx-exporter
 
-builds/jmx-exporter: charm/files/exporter.deb
-	charm build ./charm/ -o ./
+charm/builds/jmx-exporter:
+	$(MAKE) -C charm/jmx-exporter
 
 .PHONY: snap
 snap: jmx-exporter_$(JMX_EXPORTER_VERSION)_amd64.snap
 
 jmx-exporter_$(JMX_EXPORTER_VERSION)_amd64.snap:
-	SNAPCRAFT_BUILD_ENVIRONMENT_MEMORY=6G snapcraft build
+	SNAPCRAFT_BUILD_ENVIRONMENT_MEMORY=6G snapcraft
 
 .PHONY: clean
 clean: clean-charm clean-snap
 
 .PHONY: clean-charm
 clean-charm:
-	$(RM) -r ./builds ./deps
+	$(RM) -r charm/builds charm/deps
 
 .PHONY: clean-snap
 clean-snap:
+	$(RM) -r jmx-exporter_*.snap
 	snapcraft clean
 
 .PHONY: check
