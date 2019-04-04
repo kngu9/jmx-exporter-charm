@@ -1,0 +1,33 @@
+name: jmx-exporter
+base: core18
+version: '0.11'
+summary: Exposes JMX Beans via HTTP for Prometheus consumption
+description: |
+  Exposes JMX Beans via HTTP for Prometheus consumption
+
+grade: stable
+confinement: strict
+
+apps:
+  jmx:
+    command: jmx-exporter-wrapper.sh
+    daemon: simple
+    plugs: [network, network-bind]
+
+parts:
+  build:
+    stage-packages:
+      - openjdk-8-jre
+    plugin: maven
+    source: https://github.com/prometheus/jmx_exporter.git
+    source-tag: parent-0.11.0
+    source-type: git
+    maven-options:
+      - -DskipTests=true
+      - package
+    maven-targets:
+      - jmx_prometheus_httpserver
+
+  wrapper:
+    plugin: dump
+    source: snap/local

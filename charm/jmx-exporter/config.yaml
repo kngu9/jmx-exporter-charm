@@ -1,0 +1,14 @@
+options:
+  config:
+    type: string
+    default: |-
+      ---
+      jmxUrl: service:jmx:rmi:///jndi/rmi://localhost:9999/jmxrmi
+      lowercaseOutputName: false
+      lowercaseOutputLabelNames: false
+
+      rules:
+      - pattern: ".*"
+    description: |-
+      The configuration that will be used by the JMX exporter
+      visit https://github.com/prometheus/jmx_exporter/tree/master/example_configs.

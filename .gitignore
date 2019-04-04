@@ -1,3 +1,3 @@
 deps
 builds
-charm/files/exporter.deb
+jmx-exporter*.snap
