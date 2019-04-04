@@ -22,16 +22,17 @@ def refresh():
         return
 
     hookenv.status_set('maintenance', 'refreshing service')
-    clear_flag('jmxexporter.available')
+    clear_flag('jmxexporter.service-installed')
 
     jmx = JMXExporter()
     jmx.install(service=True)
+    jmx.open_ports()
     check_call(['systemctl', 'daemon-reload'])
 
-    set_flag('jmxexporter.available')
+    set_flag('jmxexporter.service-installed')
 
 
-@when_not('jmxexporter.available')
+@when_not('jmxexporter.service-installed')
 def waiting():
     hookenv.status_set('waiting', 'waiting for config')
 
@@ -41,7 +42,7 @@ def upgrade():
     refresh()
 
 
-@when('config.changed')
+@hook('config-changed')
 def config_changed():
     refresh()
 

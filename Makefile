@@ -1,18 +1,10 @@
-TARGETS = charm/files/exporter.deb \
+JMX_EXPORTER_VERSION := $(shell awk '/version:/ {print $$2}' snap/snapcraft.yaml | head -1 | sed "s/'//g")
+
+TARGETS = jmx-exporter_$(JMX_EXPORTER_VERSION)_amd64.snap \
 		  builds/jmx-exporter		  
 
 .PHONY: all
 all: $(TARGETS)
-
-.PHONY: lint
-check: lint
-
-.PHONY: lint
-lint:
-	flake8 --ignore=E121,E123,E126,E226,E24,E704,E265 charm/
-
-.PHONY: charm-jar
-charm-jar: charm/files/exporter.deb
 
 .PHONY: charm
 charm: builds/jmx-exporter
@@ -20,28 +12,26 @@ charm: builds/jmx-exporter
 builds/jmx-exporter: charm/files/exporter.deb
 	charm build ./charm/ -o ./
 
-charm/files/exporter.deb: jmx_exporter/jmx_prometheus_httpserver/target/*.deb
-	cp $? charm/files/exporter.deb
+.PHONY: snap
+snap: jmx-exporter_$(JMX_EXPORTER_VERSION)_amd64.snap
 
-jmx_exporter/jmx_prometheus_httpserver/target/*.deb: jmx_exporter/pom.xml
-	mvn -f jmx_exporter package
-
-jmx_exporter/pom.xml:
-	git submodule update --init --recursive
+jmx-exporter_$(JMX_EXPORTER_VERSION)_amd64.snap:
+	SNAPCRAFT_BUILD_ENVIRONMENT_MEMORY=6G snapcraft build
 
 .PHONY: clean
-clean: clean-charm clean-deb
+clean: clean-charm clean-snap
 
 .PHONY: clean-charm
 clean-charm:
 	$(RM) -r ./builds ./deps
 
-.PHONY: clean-deb
-clean-deb:
-	$(RM) -r charm/files/jmx_prometheus_httpserver*.deb
+.PHONY: clean-snap
+clean-snap:
+	snapcraft clean
 
-.PHONY: deps
-deps: submodules
+.PHONY: check
+check: lint
 
-submodules:
-	git submodule update --init --recursive
+.PHONY: lint
+lint:
+	flake8 --ignore=E121,E123,E126,E226,E24,E704,E265 charm/
