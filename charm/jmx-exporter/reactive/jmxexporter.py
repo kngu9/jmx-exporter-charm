@@ -11,15 +11,9 @@ def refresh():
     hookenv.status_set('maintenance', 'refreshing service')
     clear_flag('jmxexporter.service-installed')
 
-    if not JMXExporter().jmx.install():
-        # Prevent charm from firing initially
-        hookenv.status_set(
-            'waiting',
-            'waiting for config at {}'.format(
-                 hookenv.config()['config']
-            )
-        )
-        return
+    jmx = JMXExporter()
+    jmx.install()
+    jmx.restart()
 
     set_flag('jmxexporter.service-installed')
 

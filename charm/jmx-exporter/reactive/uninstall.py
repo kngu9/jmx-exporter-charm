@@ -1,6 +1,6 @@
 from charmhelpers.core import hookenv
 
-from charms.reactive import hook, set_flag
+from charms.reactive import hook
 
 from charms.layer import snap
 from charms.layer.jmxexporter import EXPORTER_SNAP

@@ -1,6 +1,4 @@
-import shutil
-
-from os import path
+from os import path, chmod
 
 from charmhelpers.core import hookenv, host
 
@@ -14,23 +12,13 @@ class JMXExporter():
     def install(self):
         '''
         Attempts to install configuration files from the config option.
-
-        Will return false if file does not exist
         '''
-        cfg = hookenv.config()
+        cfg_path = path.join([EXPORTER_COMMON, 'config.yaml'])
 
-        if not path.isfile(cfg['config']):
-            return False
+        with open(cfg_path, 'w+') as f:
+            f.write(hookenv.config()['config'])
 
-        shutil.copy(
-            cfg,
-            path.join(
-                EXPORTER_COMMON,
-                'config.yaml'
-            )
-        )
-
-        return True
+        chmod(cfg_path, 0o440)
 
     def open_ports(self):
         '''

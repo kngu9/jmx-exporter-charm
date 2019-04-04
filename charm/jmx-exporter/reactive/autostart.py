@@ -11,6 +11,7 @@ def autostart():
 
     if jmx.is_running():
         hookenv.status_set('active', 'ready')
+        jmx.open_ports()
         return
 
     for i in range(3):
@@ -22,6 +23,7 @@ def autostart():
         jmx.restart()
         if jmx.is_running():
             hookenv.status_set('active', 'ready')
+            jmx.open_ports()
             return
 
     hookenv.status_set('blocked', 'failed to start jmx_exporter; check syslog')

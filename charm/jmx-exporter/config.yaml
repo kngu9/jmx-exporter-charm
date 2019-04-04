@@ -1,7 +1,19 @@
 options:
   config:
     type: string
-    default: /etc/jmx_exporter/jmx_exporter.yaml
+    default: |-
+      # Begin config
+      ---
+      hostPort: localhost:4081
+      username: 
+      password: 
+      jmxUrl: service:jmx:rmi:///jndi/rmi://localhost:9999/jmxrmi
+      lowercaseOutputName: false
+      lowercaseOutputLabelNames: false
+
+      rules:
+      - pattern: ".*"
+      # End config
     description: |-
-      The path to the jmx_exporter configuration yaml. For examples
+      The configuration that will be used by the JMX exporter
       visit https://github.com/prometheus/jmx_exporter/tree/master/example_configs.

@@ -3,7 +3,7 @@
 set -eu
 
 if [ ! -f $SNAP_COMMON/config.yaml ]; then
-	echo "configuration file $SNAP_COMMON/config.properties does not exist."
+	echo "configuration file $SNAP_COMMON/config.yaml does not exist."
 	exit 1
 fi
 
