@@ -13,7 +13,7 @@ class JMXExporter():
         '''
         Attempts to install configuration files from the config option.
         '''
-        cfg_path = path.join([EXPORTER_COMMON, 'config.yaml'])
+        cfg_path = path.join(EXPORTER_COMMON, 'config.yaml')
 
         with open(cfg_path, 'w+') as f:
             f.write(hookenv.config()['config'])
