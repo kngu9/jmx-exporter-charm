@@ -1,6 +1,5 @@
 from charms.reactive import (when, when_any, when_not, when_none,
                              set_flag, clear_flag, hook)
-from charms.reactive.helpers import data_changed
 
 from charmhelpers.core import hookenv
 
@@ -25,9 +24,6 @@ def waiting():
 
 @hook('config-changed')
 def config_changed():
-    if not data_changed('jmx_exporter.config', hookenv.config()['config']):
-        return
-
     refresh()
 
 
