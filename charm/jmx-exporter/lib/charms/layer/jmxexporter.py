@@ -4,7 +4,7 @@ from charmhelpers.core import hookenv, host
 
 EXPORTER_PORT = 4081
 EXPORTER_SNAP = 'jmx-exporter'
-EXPORTER_SERVICE = 'snap.{}.jmx-exporter.service'.format(EXPORTER_SNAP)
+EXPORTER_SERVICE = 'snap.{}.jmx.service'.format(EXPORTER_SNAP)
 EXPORTER_COMMON = '/var/snap/{}/common'.format(EXPORTER_SNAP)
 
 
