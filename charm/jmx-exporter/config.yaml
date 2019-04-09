@@ -8,7 +8,7 @@ options:
       lowercaseOutputLabelNames: false
 
       rules:
-      - pattern: ".*"
+      - pattern: "^(?!org_eclipse_jetty).*"
     description: |-
       The configuration that will be used by the JMX exporter
       visit https://github.com/prometheus/jmx_exporter/tree/master/example_configs.
