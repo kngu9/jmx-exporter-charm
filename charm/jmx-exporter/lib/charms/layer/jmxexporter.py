@@ -1,6 +1,6 @@
-from os import path, chmod
+from os import path
 
-from charmhelpers.core import hookenv, host
+from charmhelpers.core import hookenv, host, templating
 
 EXPORTER_PORT = 4081
 EXPORTER_SNAP = 'jmx-exporter'
@@ -15,10 +15,23 @@ class JMXExporter():
         '''
         cfg_path = path.join(EXPORTER_COMMON, 'config.yaml')
 
-        with open(cfg_path, 'w+') as f:
-            f.write(hookenv.config()['config'])
+        unit_name = hookenv.principal_unit() or 'unknown'
+        if unit_name == 'unknown':
+            app_name = 'unknown'
+        else:
+            app_name = unit_name.split('/')[0]
 
-        chmod(cfg_path, 0o440)
+        # Render configuration from config option
+        templating.render(
+            None,
+            cfg_path,
+            config_template=hookenv.config()['config'],
+            context={
+                'juju_unit_name': unit_name,
+                'juju_application_name': app_name,
+            },
+            perms=0o644
+        )
 
     def open_ports(self):
         '''
