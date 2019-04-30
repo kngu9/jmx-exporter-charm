@@ -7,13 +7,22 @@ from charms.layer.jmxexporter import JMXExporter
 
 
 def refresh():
-    hookenv.status_set('maintenance', 'refreshing service')
+    jmx = JMXExporter()
+
     clear_flag('jmxexporter.service-installed')
 
-    jmx = JMXExporter()
+    if not hookenv.config()['config']:
+        hookenv.status_set('waiting', 'waiting for config')
+
+        if jmx.is_running():
+            jmx.stop()
+
+        return
+
+    hookenv.status_set('maintenance', 'refreshing service')
     jmx.install()
     jmx.restart()
-
+    hookenv.status_set('active', 'running')
     set_flag('jmxexporter.service-installed')
 
 

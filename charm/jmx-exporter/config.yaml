@@ -1,18 +1,7 @@
 options:
   config:
     type: string
-    default: |-
-      ---
-      jmxUrl: service:jmx:rmi:///jndi/rmi://localhost:9999/jmxrmi
-      lowercaseOutputName: true
-      lowercaseOutputLabelNames: true
-
-      rules:
-      - pattern: ^(.*)
-        name: $1
-        labels:
-          application: {{ juju_application_name }}
-          unit: "{{ juju_unit_name }}"
+    default: ''
     description: |-
       The configuration that will be used by the JMX exporter
       visit https://github.com/prometheus/jmx_exporter/tree/master/example_configs.
